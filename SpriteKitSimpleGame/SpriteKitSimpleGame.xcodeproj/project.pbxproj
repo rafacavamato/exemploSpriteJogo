@@ -19,6 +19,7 @@
 		27821F041AF7A8CB00129819 /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27821F031AF7A8CB00129819 /* sprites.atlas */; };
 		27821F061AF7B10700129819 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27821F051AF7B10700129819 /* GameOverScene.swift */; };
 		27821F081AF7B22B00129819 /* pew-pew-lei.caf in Resources */ = {isa = PBXBuildFile; fileRef = 27821F071AF7B22B00129819 /* pew-pew-lei.caf */; };
+		27A0D0B11AFB893E00EF9722 /* background-music-aac.caf in Resources */ = {isa = PBXBuildFile; fileRef = 27A0D0B01AFB893E00EF9722 /* background-music-aac.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		27821F031AF7A8CB00129819 /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
 		27821F051AF7B10700129819 /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		27821F071AF7B22B00129819 /* pew-pew-lei.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "pew-pew-lei.caf"; path = "Sounds/pew-pew-lei.caf"; sourceTree = "<group>"; };
+		27A0D0B01AFB893E00EF9722 /* background-music-aac.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "background-music-aac.caf"; path = "sprites.atlas/background-music-aac.caf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				27821EE61AF7A34200129819 /* Images.xcassets */,
 				27821EE81AF7A34200129819 /* LaunchScreen.xib */,
 				27821F071AF7B22B00129819 /* pew-pew-lei.caf */,
+				27A0D0B01AFB893E00EF9722 /* background-music-aac.caf */,
 				27821F031AF7A8CB00129819 /* sprites.atlas */,
 				27821F011AF7A8C500129819 /* Sounds */,
 				27821ED91AF7A34200129819 /* Supporting Files */,
@@ -210,6 +213,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27A0D0B11AFB893E00EF9722 /* background-music-aac.caf in Resources */,
 				27821F081AF7B22B00129819 /* pew-pew-lei.caf in Resources */,
 				27821F021AF7A8C500129819 /* Sounds in Resources */,
 				27821EEA1AF7A34200129819 /* LaunchScreen.xib in Resources */,
@@ -433,6 +437,7 @@
 				27821EFB1AF7A34200129819 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		27821EFC1AF7A34200129819 /* Build configuration list for PBXNativeTarget "SpriteKitSimpleGameTests" */ = {
 			isa = XCConfigurationList;
@@ -441,6 +446,7 @@
 				27821EFE1AF7A34200129819 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

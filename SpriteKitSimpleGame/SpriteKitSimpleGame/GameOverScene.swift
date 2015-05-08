@@ -15,19 +15,24 @@ class GameOverScene: SKScene {
         
         super.init(size: size)
         
+        runAction(SKAction.playSoundFileNamed("Sounds/death.mp3", waitForCompletion: false))
+        
         // 1
         backgroundColor = SKColor.whiteColor()
+        var bgImage = SKSpriteNode(imageNamed: "blood.png")
+        self.addChild(bgImage)
+        bgImage.position = CGPointMake(self.size.width/2, self.size.height/2)
         
-        // 2
-        var message = won ? "You Won!" : "You Lose :["
-        
-        // 3
-        let label = SKLabelNode(fontNamed: "Chalkduster")
-        label.text = message
-        label.fontSize = 40
-        label.fontColor = SKColor.blackColor()
-        label.position = CGPoint(x: size.width/2, y: size.height/2)
-        addChild(label)
+//        // 2
+//        var message = won ? "You Won!" : "You Lose :["
+//        
+//        // 3
+//        let label = SKLabelNode(fontNamed: "Chalkduster")
+//        label.text = message
+//        label.fontSize = 40
+//        label.fontColor = SKColor.blackColor()
+//        label.position = CGPoint(x: size.width/2, y: size.height/2)
+//        addChild(label)
         
         // 4
         runAction(SKAction.sequence([

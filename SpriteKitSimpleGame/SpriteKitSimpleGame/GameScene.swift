@@ -12,7 +12,8 @@ import AVFoundation
 struct PhysicsCategory {
     static let None      : UInt32 = 0
     static let All       : UInt32 = UInt32.max
-    static let Monster   : UInt32 = 0b1       // 1
+    static let Monster   : UInt32 = 0b1
+    static let White     : UInt32 = 0b1// 1
     static let Projectile: UInt32 = 0b10      // 2
 }
 
@@ -53,14 +54,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var monstersDestroyed = 0
     
     // 1
-    let player = SKSpriteNode(imageNamed: "player")
+    let player = SKSpriteNode(imageNamed: "battler")
+    var aux = 0
     
     override func didMoveToView(view: SKView) {
         
-        playBackgroundMusic("background-music-aac.caf")
         
         // 2
-        backgroundColor = SKColor.whiteColor()
+        backgroundColor = SKColor.redColor()
         // 3
         player.position = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         // 4
@@ -69,7 +70,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([
                 SKAction.runBlock(addMonster),
-                SKAction.waitForDuration(1.0)
+                SKAction.waitForDuration(0.3),
+                SKAction.runBlock(addWhiteMonster),
+                SKAction.waitForDuration(2.0)
                 ])
             ))
         
@@ -84,6 +87,62 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func random(#min: CGFloat, max: CGFloat) -> CGFloat {
         return random() * (max - min) + min
     }
+
+    func addWhiteMonster(){
+        // Create sprite
+        let whiteMonster = SKSpriteNode(imageNamed: "white")
+        
+        whiteMonster.physicsBody = SKPhysicsBody(rectangleOfSize: whiteMonster.size) // 1
+        whiteMonster.physicsBody?.dynamic = true // 2
+        whiteMonster.physicsBody?.categoryBitMask = PhysicsCategory.Monster // 3
+        whiteMonster.physicsBody?.contactTestBitMask = PhysicsCategory.Projectile // 4
+        whiteMonster.physicsBody?.collisionBitMask = PhysicsCategory.None // 5
+        
+        // Determine where to spawn the monster along the Y axis
+        let actualY = random(min: whiteMonster.size.height/2, max: size.height - whiteMonster.size.height/2)
+        
+        // Position the monster slightly off-screen along the right edge,
+        // and along a random position along the Y axis as calculated above
+        whiteMonster.position = CGPoint(x: size.width + whiteMonster.size.width/2, y: actualY)
+        
+        // Add the monster to the scene
+        addChild(whiteMonster)
+        
+        // Determine speed of the monster
+        let actualDuration = random(min: CGFloat(2.0), max: CGFloat(4.0))
+        
+        // Create the actions
+        let actionMove = SKAction.moveTo(CGPoint(x: -whiteMonster.size.width/2, y: actualY), duration: NSTimeInterval(actualDuration))
+        let actionMoveDone = SKAction.removeFromParent()
+        //monster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
+        
+        let loseAction = SKAction.runBlock() {
+            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+            let gameOverScene = GameOverScene(size: self.size, won: false)
+            self.view?.presentScene(gameOverScene, transition: reveal)
+        }
+        whiteMonster.runAction(SKAction.sequence([actionMove, loseAction, actionMoveDone]))
+    }
+    
+    func projectileDidCollideWithWhiteMonster(projectile:SKSpriteNode, whiteMonster:SKSpriteNode) {
+        
+        println("Hit")
+        whiteMonster.removeFromParent()
+        aux = aux + 1
+        if aux >= 2 {
+            projectile.removeFromParent()
+            aux = 0
+        }
+        
+//        monstersDestroyed++
+//        if (monstersDestroyed > 30) {
+//            let reveal = SKTransition.flipHorizontalWithDuration(0.5)
+//            let gameOverScene = GameOverScene(size: self.size, won: true)
+//            self.view?.presentScene(gameOverScene, transition: reveal)
+//        }
+    }
+
+    
     
     func addMonster() {
         
@@ -151,14 +210,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 2
         if ((firstBody.categoryBitMask & PhysicsCategory.Monster != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.Projectile != 0)) {
-                projectileDidCollideWithMonster(firstBody.node as! SKSpriteNode, monster: secondBody.node as! SKSpriteNode)
+                projectileDidCollideWithWhiteMonster(firstBody.node as! SKSpriteNode, whiteMonster: secondBody.node as! SKSpriteNode)
+                
         }
-        
+//        if ((firstBody.categoryBitMask & PhysicsCategory.White != 0) &&
+//        (secondBody.categoryBitMask & PhysicsCategory.Projectile != 0)) {
+//            projectileDidCollideWithWhiteMonster(firstBody.node as! SKSpriteNode, whiteMonster: secondBody.node as! SKSpriteNode)
+//            
+//        }
     }
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         
-        runAction(SKAction.playSoundFileNamed("pew-pew-lei.caf", waitForCompletion: false))
+        runAction(SKAction.playSoundFileNamed("Sounds/lazer.wav", waitForCompletion: false))
         
         // 1 - Choose one of the touches to work with
         let touch = touches.first as! UITouch
@@ -199,28 +263,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         projectile.runAction(SKAction.sequence([actionMove, actionMoveDone]))
     }
     
-    
-    
-    var backgroundMusicPlayer: AVAudioPlayer!
-    
-    func playBackgroundMusic(filename: String) {
-        let url = NSBundle.mainBundle().URLForResource(
-            filename, withExtension: nil)
-        if (url == nil) {
-            println("Could not find file: \(filename)")
-            return
-        }
-        
-        var error: NSError? = nil
-        backgroundMusicPlayer =
-            AVAudioPlayer(contentsOfURL: url, error: &error)
-        if backgroundMusicPlayer == nil {
-            println("Could not create audio player: \(error!)")
-            return
-        }
-        
-        backgroundMusicPlayer.numberOfLoops = -1
-        backgroundMusicPlayer.prepareToPlay()
-        backgroundMusicPlayer.play()
+}
+var backgroundMusicPlayer: AVAudioPlayer!
+
+func playBackgroundMusic(filename: String) {
+    let url = NSBundle.mainBundle().URLForResource(
+        filename, withExtension: nil)
+    if (url == nil) {
+        println("Could not find file: \(filename)")
+        return
     }
+    
+    var error: NSError? = nil
+    backgroundMusicPlayer =
+        AVAudioPlayer(contentsOfURL: url, error: &error)
+    if backgroundMusicPlayer == nil {
+        println("Could not create audio player: \(error!)")
+        return
+    }
+    
+    backgroundMusicPlayer.numberOfLoops = -1
+    backgroundMusicPlayer.prepareToPlay()
+    backgroundMusicPlayer.play()
 }

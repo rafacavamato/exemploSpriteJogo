@@ -20,6 +20,8 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .ResizeFill
         skView.presentScene(scene)
+        
+        playBackgroundMusic ("Sounds/danceMoonRabbits.mp3")
     }
     
     override func prefersStatusBarHidden() -> Bool {
